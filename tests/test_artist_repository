@@ -1,0 +1,48 @@
+from lib.artist_repository import ArtistRepository
+from lib.artist import Artist
+
+"""
+When I call # all
+I get all the artists in the artists table
+"""
+
+def test_all(db_connection):
+    db_connection.seed("seeds/record_store.sql")
+    repository = ArtistRepository(db_connection)
+    assert repository.all() == [
+        Artist(1, "pixies", "indie"),
+        Artist(2, "ABBA", "pop"),
+        Artist(3, "Taylor Swift", "pop"),
+        Artist(4, "Nina Simone", "jazz")
+    ]
+
+"""
+When I call # create
+I create an artist in the database
+And I can see it back in #all
+"""
+def test_create(db_connection):
+    db_connection.seed("seeds/record_store.sql")
+    repository = ArtistRepository(db_connection)
+    artist = Artist(None, "Test artist", "rock")
+    repository.create(artist)
+    assert repository.all() == [
+        Artist(1, "pixies", "indie"),
+        Artist(2, "ABBA", "pop"),
+        Artist(3, "Taylor Swift", "pop"),
+        Artist(4, "Nina Simone", "jazz"),
+        Artist(5, "Test artist", "rock")
+    ]
+
+
+"""
+When we call #find
+We get a single Artist object
+"""
+def test_find(db_connection):
+    db_connection.seed("seeds/record_store.sql")
+    repository = ArtistRepository(db_connection)
+    
+    result = repository.find(2)
+    assert result ==  Artist(2, "ABBA", "pop")
+    
